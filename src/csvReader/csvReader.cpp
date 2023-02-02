@@ -346,5 +346,5 @@ bool CSVReader::read_header(const std::string &line)
 
 CSVReader::CSVReader(std::string filename) : errorFound(false)
 {
-    read_file(filename);
+    errorFound = read_file(filename);
 }
