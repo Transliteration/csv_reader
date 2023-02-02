@@ -2,6 +2,7 @@
 #include <iostream>
 #include <charconv>
 #include <fstream>
+#include <iomanip>
 
 UnknownValueIndex::UnknownValueIndex(CellIndex index, Cell &cell)
     : index(index), cell(cell), hasError(false)
@@ -205,7 +206,7 @@ bool CSVReader::check_read_line(const std::vector<std::string> &lineTokens, int 
         rowIdStr.find_first_not_of("0123456789") == std::string::npos;
     if (!containsOnlyDigits)
     {
-        std::cerr << "Row identificator " << rowNumber + 1
+        std::cerr << "Row identificator " << std::quoted(rowIdStr) << " in row #" << rowNumber + 1
                   << " have characters other than digits " << std::endl;
         errorFound = true;
         return false;
@@ -215,14 +216,14 @@ bool CSVReader::check_read_line(const std::vector<std::string> &lineTokens, int 
 
     if (ec == std::errc::invalid_argument)
     {
-        std::cerr << "Row identificator " << rowNumber + 1
+        std::cerr << "Row identificator " << std::quoted(rowIdStr) << " in row #" << rowNumber + 1
                   << " does not consist entirely of digits " << std::endl;
         errorFound = true;
         return false;
     }
     else if (ec == std::errc::result_out_of_range)
     {
-        std::cerr << "Row identificator " << rowIdStr << " is larger than an int.\n";
+        std::cerr << "Row identificator " << std::quoted(rowIdStr) << " in row #" << rowNumber + 1 << " is larger than an int.\n";
         errorFound = true;
         return false;
     }
