@@ -4,16 +4,6 @@
 #include <fstream>
 #include <iomanip>
 
-UnknownValueIndex::UnknownValueIndex(CellIndex index, Cell &cell)
-    : index(index), cell(cell), hasError(false)
-{
-}
-
-UnknownValueIndex::UnknownValueIndex(size_t x, size_t y, Cell &cell)
-    : index({x, y}), cell(cell), hasError(false)
-{
-}
-
 std::ostream &operator<<(std::ostream &os, Cell const &va)
 {
     std::visit(
@@ -279,10 +269,10 @@ bool CSVReader::read_file(std::string filename)
         {
             const auto &cellStr = lineTokens[columnNumber];
 
-            bool containsOnlyDigits =
+            const bool containsOnlyDigits =
                 cellStr.find_first_not_of("0123456789") == std::string::npos;
 
-            bool empty = cellStr.empty();
+            const bool empty = cellStr.empty();
 
             if (containsOnlyDigits && !empty)
             {
@@ -299,7 +289,13 @@ bool CSVReader::read_file(std::string filename)
             else if (util::is_formula_correct(cellStr))
             {
                 currentRow[columnNumber] = cellStr;
-                formulasToCalculate.push_back({rowNumber, columnNumber, currentRow[columnNumber]});
+
+                UnknownValueIndex formula;
+                formula.cell = currentRow[columnNumber];
+                formula.index.col = columnNumber;
+                formula.index.row = rowNumber;
+
+                formulasToCalculate.push_back(std::move(formula));
             }
             else
             {
@@ -328,10 +324,9 @@ bool CSVReader::read_header(const std::string &line)
     {
         currentRow.push_back(columnName);
 
-        if (bool inserted =
-                columnNames
-                    .insert_or_assign(std::move(columnName), columnNumber)
-                    .second;
+        if (bool inserted = columnNames
+                                .insert_or_assign(std::move(columnName), columnNumber)
+                                .second;
             !inserted)
         {
             std::cerr << "Column names in header are repeated" << std::endl;

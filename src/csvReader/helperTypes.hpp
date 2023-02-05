@@ -35,10 +35,7 @@ struct UnknownValueIndex
     Operands ops;
     Cell cell;
     char op;
-    bool hasError;
-
-    UnknownValueIndex(CellIndex index, Cell &cell);
-    UnknownValueIndex(size_t x, size_t y, Cell &cell);
+    bool hasError = false;
 };
 
 std::ostream &operator<<(std::ostream &os, Cell const &va);

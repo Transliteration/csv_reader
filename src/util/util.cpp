@@ -57,12 +57,12 @@ namespace util
         // operand is formula
         if (firstNumPos == 0)
         {
-            auto posOfFirstLastChar = opStr.find_last_not_of("0123456789");
+            const auto posOfFirstLastChar = opStr.find_last_not_of("0123456789");
 
-            auto colName = opStr.substr(0, posOfFirstLastChar + 1);
+            const auto colName = opStr.substr(0, posOfFirstLastChar + 1);
             op.col = colName;
 
-            auto [ptr, ec]{std::from_chars(opStr.data() + colName.size(), opStr.data() + opStr.size(), op.row)};
+            const auto [ptr, ec]{std::from_chars(opStr.data() + colName.size(), opStr.data() + opStr.size(), op.row)};
 
             op.type = OpType::cellIndex;
 
@@ -80,7 +80,7 @@ namespace util
         // operand is value
         else
         {
-            auto [ptr, ec]{std::from_chars(opStr.data(), opStr.data() + opStr.size(), op.value)};
+            const auto [ptr, ec]{std::from_chars(opStr.data(), opStr.data() + opStr.size(), op.value)};
 
             op.type = OpType::value;
 
@@ -102,7 +102,7 @@ namespace util
     Operands parse_formula(std::string_view formula, char delim)
     {
         Operands ops;
-        size_t delimPos = formula.find(delim);
+        const size_t delimPos = formula.find(delim);
         ops.lhs = parse_operand(formula.substr(1, delimPos - 1), formula);
         ops.rhs = parse_operand(formula.substr(delimPos + 1), formula);
 
@@ -114,9 +114,9 @@ namespace util
     bool is_formula_correct(std::string_view str)
     {
         // = sign check
-        auto firstEqualSignPos = str.find('=');
+        const auto firstEqualSignPos = str.find('=');
         {
-            auto lastEqualSignPos = str.rfind('=');
+            const auto lastEqualSignPos = str.rfind('=');
 
             if (firstEqualSignPos != lastEqualSignPos)
             {
@@ -138,9 +138,9 @@ namespace util
         }
 
         // Op sign check
-        auto firstOpSignPos = str.find_first_of("+-*/");
+        const auto firstOpSignPos = str.find_first_of("+-*/");
         {
-            auto lastOpSignPos = str.find_last_of("+-*/");
+            const auto lastOpSignPos = str.find_last_of("+-*/");
 
             if (firstOpSignPos != lastOpSignPos)
             {
