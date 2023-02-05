@@ -3,7 +3,7 @@
 
 int main(int argc, char const *argv[])
 {
-    ArgParser argParser(argc, argv);
+    const ArgParser argParser(argc, argv);
     if (!argParser.parsed_properly())
     {
         return -1;
@@ -14,11 +14,5 @@ int main(int argc, char const *argv[])
     reader.calc_all_formulas();
     reader.print_table();
 
-    // At least one error was found during parsing file
-    if (reader.errorFound)
-    {
-        return -1;
-    }
-
-    return 0;
+    return reader.errorFound;
 }
