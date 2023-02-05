@@ -26,24 +26,38 @@ namespace util
             break;
 
         default:
+            throw std::invalid_argument("Error: Function was called with unsupported operation");
             break;
         }
 
         // unreachable
-        throw("");
         return 0;
     }
 
     // lazy solution, string copy construction involved in sstream constructor
-    std::vector<std::string> split_string(const std::string &strToSplit, char delim)
+    std::vector<std::string> split_string(std::string strToSplit, char delim)
     {
         std::vector<std::string> result;
+
+        if (strToSplit.empty())
+        {
+            result.push_back("");
+            return result;
+        }
+
+        std::erase(strToSplit, ' ');
+
         std::stringstream ss(strToSplit);
         std::string item;
 
         while (std::getline(ss, item, delim))
         {
             result.push_back(std::move(item));
+        }
+
+        if (strToSplit.ends_with(delim))
+        {
+            result.push_back("");
         }
 
         return result;

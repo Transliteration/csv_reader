@@ -8,11 +8,11 @@
 
 namespace util
 {
-    // doesn't check for zero division
+    // doesn't check for zero division, doesn't handle overflows
     int calculate(int lhs, char op, int rhs);
 
     // lazy solution, string copy construction involved in sstream constructor
-    std::vector<std::string> split_string(const std::string &s, char delim);
+    std::vector<std::string> split_string(std::string s, char delim);
 
     Operand parse_operand(std::string_view opStr, std::string_view formula);
 
