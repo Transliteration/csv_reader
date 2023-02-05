@@ -13,4 +13,4 @@ Unit tests code placed in test folder.
 To run them type ./bin/util_test
 
 # Or do it all at once
-./build.sh && ./run_tests.sh
+./build.sh && ./bin/util_test && ./run_tests.sh
