@@ -182,12 +182,6 @@ bool CSVReader::check_read_line(const std::vector<std::string> &lineTokens, int 
             std::cerr << "The number of columns in row number " << rowNumber
                       << " does not match the number of columns in the header"
                       << std::endl;
-
-            // if row lenght is bigger then columns length - table can't be parsed properly
-            if (tokens_size > column_size)
-            {
-                return false;
-            }
         }
     }
 
@@ -236,14 +230,9 @@ bool CSVReader::read_file(std::string filename)
 
     std::string headerLine;
     getline(input, headerLine);
-    if (!read_header(headerLine))
-    {
-        return false;
-    }
+    bool wereErrorsFound = read_header(headerLine);
 
     size_t rowNumber = 1;
-
-    bool wereErrorsFound = false;
 
     for (std::string line; getline(input, line);)
     {
@@ -254,7 +243,7 @@ bool CSVReader::read_file(std::string filename)
             wereErrorsFound = true;
         }
 
-        if (lineTokens.size() < columnNames.size())
+        if (lineTokens.size() != columnNames.size())
         {
             lineTokens.resize(columnNames.size());
         }
@@ -313,14 +302,15 @@ bool CSVReader::read_file(std::string filename)
 
 bool CSVReader::read_header(const std::string &line)
 {
-    auto headerTokens = util::split_string(line, ',');
+    const auto headerTokens = util::split_string(line, ',');
+    bool wereErrorsFound = false;
 
     cells.resize(1);
     auto &currentRow = cells.front();
 
     int columnNumber = 0;
 
-    for (auto &columnName : headerTokens)
+    for (const auto &columnName : headerTokens)
     {
         currentRow.push_back(columnName);
 
@@ -330,13 +320,13 @@ bool CSVReader::read_header(const std::string &line)
             !inserted)
         {
             std::cerr << "Column names in header are repeated" << std::endl;
-            return false;
+            wereErrorsFound = true;
         }
 
         ++columnNumber;
     }
 
-    return true;
+    return wereErrorsFound;
 }
 
 CSVReader::CSVReader(std::string filename) : errorFound(false)
